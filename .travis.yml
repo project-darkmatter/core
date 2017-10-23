@@ -1,0 +1,31 @@
+language: common-lisp
+
+env:
+  global:
+    - PATH=~/.roswell/bin:$PATH
+    - ROSWELL_BRANCH=release
+    - ROSWELL_INSTALL_DIR=$HOME/.roswell
+    - COVERAGE_EXCLUDE=quicklisp
+  matrix:
+    - LISP=sbcl-bin COVERALLS=true
+
+install:
+  # Install Roswell
+  - curl -L https://raw.githubusercontent.com/snmsts/roswell/$ROSWELL_BRANCH/scripts/install-for-ci.sh | sh
+  - ros install asdf
+  - ros -e '(ql:update-all-dists :prompt nil)'
+  - ros install qlot
+  - ros install prove
+  - qlot install
+
+cache:
+  directories:
+    - $HOME/.roswell
+    - $HOME/.config/common-lisp
+
+before_script:
+  - ros --version
+  - ros config
+
+script:
+  - qlot exec run-prove *-test.asd
