@@ -1,0 +1,22 @@
+("quicklisp" .
+ (:class qlot.source.ql:source-ql-all
+  :initargs (:project-name "quicklisp" :%version :latest)
+  :version "2017-10-19"))
+("jsonrpc" .
+ (:class qlot.source.git:source-git
+  :initargs (:project-name "jsonrpc" :remote-url "https://github.com/fukamachi/jsonrpc" :ref "766101b4ecbafb73490e1d84569f2dc64524fe42")
+  :version "git-766101b4ecbafb73490e1d84569f2dc64524fe42"
+  :remote-url "https://github.com/fukamachi/jsonrpc"
+  :ref "766101b4ecbafb73490e1d84569f2dc64524fe42"))
+("cl-fad" .
+ (:class qlot.source.ql:source-ql
+  :initargs (:project-name "cl-fad" :%version :latest)
+  :version "ql-2017-10-19"))
+("lparallel" .
+ (:class qlot.source.ql:source-ql
+  :initargs (:project-name "lparallel" :%version :latest)
+  :version "ql-2017-10-19"))
+("yason" .
+ (:class qlot.source.ql:source-ql
+  :initargs (:project-name "yason" :%version :latest)
+  :version "ql-2017-10-19"))
