@@ -46,7 +46,10 @@
                  ;                      (:file "save" :depends-on ("base")))
                  ;         :depends-on ("domains"))
                  (:module "domains"
-                          :components ((:file "task"))))))
+                          :components ((:file "task"))
+                          :depends-on ("utils"))
+                 (:module "utils"
+                          :components ((:file "maybe"))))))
   :description ""
   :long-description
   #.(with-open-file (stream (merge-pathnames
