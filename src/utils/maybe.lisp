@@ -20,6 +20,11 @@
 (defstruct (nothing (:constructor nothing)
                     (:include maybe)))
 
+(defun maybe (a)
+  (if (null a)
+      (nothing)
+      (just a)))
+
 (defun unwrap (a)
   (declare (type maybe a))
   (typecase a
