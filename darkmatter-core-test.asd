@@ -15,7 +15,10 @@
                :prove)
   :components ((:module "test"
                 :components
-                ((:test-file "domains"))))
+                ((:module "utils"
+                          :components
+                          ((:test-file "maybe")))
+                 (:test-file "domains"))))
   :description "Test system for darkmatter"
 
   :defsystem-depends-on (:prove-asdf)
