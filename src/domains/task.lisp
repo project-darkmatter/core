@@ -71,12 +71,11 @@
 
 ;;; Task Result
 (deftype task-result-status () '(member :success :failure))
-(deftype task-result-value () 'string)
 (deftype task-result-output () 'string)
 (deftype task-result-optional () 'maybe)
 (defstruct task-result
   (status   nil :type task-result-status)
-  (value    nil :type task-result-value)
+  (value    nil)
   (output   "" :type task-result-output)
   (optional (nothing) :type task-result-optional))
 
