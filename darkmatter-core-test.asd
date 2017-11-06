@@ -18,7 +18,8 @@
                 ((:module "utils"
                           :components
                           ((:test-file "maybe")))
-                 (:test-file "domains"))))
+                 (:test-file "domains")
+                 (:test-file "usecases"))))
   :description "Test system for darkmatter"
 
   :defsystem-depends-on (:prove-asdf)
