@@ -9,7 +9,7 @@
 
 (diag "Usecase layer tests")
 
-(plan 2)
+(plan 3)
 
 (subtest "Testing eval usecase"
   (let* ((code "(+ 1 2 3)")
@@ -62,5 +62,20 @@
             :failure)
         (is (gethash :temporary (usecase.get-result-result-context result2-2))
             "i got lost!")))))
+
+(subtest "Testing kill usecase"
+  (let* ((task (let ((context (make-hash-table)))
+                 (make-task
+                   (lambda ()
+                     (setf (gethash :temporary context) "kill me!")
+                     (sleep 1000)
+                     (make-task-result :value nil :status :failure)))))
+         (ref (register-task task)))
+    (sleep 0.1)
+    (let ((result (usecase.kill (task-reference-id ref))))
+      (is-type result
+               'usecase.kill-result)
+      (is (gethash :temporary (usecase.kill-result-context result))
+          "kill me!"))))
 
 (finalize)
