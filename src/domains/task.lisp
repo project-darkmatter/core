@@ -2,7 +2,7 @@
 (defpackage darkmatter/domains/task
   (:use :cl :darkmatter/utils/maybe)
   (:export :status
-           :task
+           :task-entity
            :make-task
            :make-task-result
            :task-result-status
@@ -32,23 +32,23 @@
   (thread nil)
   (context nil :type task-context))
 
-(defstruct (%task-entity (:include %task))
+(defstruct (task-entity (:include %task))
   (id 0 :type task-id))
 
 (let ((task-count 0))
   (defun make-task (fun &optional (context nil))
-    (make-%task-entity :thread (bt:make-thread fun)
-                       :context (maybe context)
-                       :id (incf task-count))))
+    (make-task-entity :thread (bt:make-thread fun)
+                      :context (maybe context)
+                      :id (incf task-count))))
 
 (defun kill-task (task)
-  (bt:destroy-thread (%task-entity-thread task)))
+  (bt:destroy-thread (task-entity-thread task)))
 
 (defun task-alive-p (task)
-  (bt:thread-alive-p (%task-entity-thread task)))
+  (bt:thread-alive-p (task-entity-thread task)))
 
 (defun join-task (task)
-  (bt:join-thread (%task-entity-thread task)))
+  (bt:join-thread (task-entity-thread task)))
 
 ;;; Task Reference
 (defstruct task-reference
@@ -57,7 +57,7 @@
 (defun task-repository-ref (repo ref)
   (find (task-reference-id ref)
         (%task-repository-entries repo)
-        :test (lambda (id entity) (= id (%task-entity-id entity)))))
+        :test (lambda (id entity) (= id (task-entity-id entity)))))
 
 ;;; Task Repository
 (defstruct %task-repository
@@ -67,7 +67,7 @@
 
 (defun task-repository-append (repo task)
   (push task (%task-repository-entries repo))
-  (make-task-reference :id (%task-entity-id task)))
+  (make-task-reference :id (task-entity-id task)))
 
 ;;; Task Result
 (deftype task-result-status () '(member :success :failure))
@@ -102,7 +102,7 @@
                 :value (task-result-value result)
                 :output (task-result-output result)
                 :optional (task-result-optional result)
-                :context (%task-entity-context task)))))))
+                :context (task-entity-context task)))))))
 
 (defun cancel-task (task)
   (kill-task task)
@@ -112,6 +112,6 @@
       :value ""
       :output ""
       :optional (nothing)
-      :context (%task-entity-context task))))
+      :context (task-entity-context task))))
 
 
