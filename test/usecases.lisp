@@ -15,17 +15,27 @@
 (plan 3)
 
 (subtest "Testing eval usecase"
-  (let* ((code "(+ 1 2 3)")
+  (let* ((code "(defvar tmp 10)")
          (result (usecase.eval code :render nil :optional nil)))
     (is-type result 'usecase.eval.result)
     (let ((id (usecase.eval.result-task-id result)))
       (is-type id 'task-id)
       (let ((task (retrieve-task id)))
         (is-type task 'task-entity)
+        (sleep 1)
         (let ((task-result (try-get-task-result task)))
           (is-type task-result 'just)
           (is (bind task-result #'task-result-status) :success)
-          (is (bind task-result #'task-result-value) 6))))))
+          (is (bind task-result #'task-result-value) 10)))))
+  (let* ((code "(print (* tmp 10))")
+         (result (usecase.eval code :render nil :optional nil))
+         (id (usecase.eval.result-task-id result))
+         (task (retrieve-task id)))
+    (sleep 1)
+    (let ((task-result (try-get-task-result task)))
+      (is-type task-result 'just)
+      (is (bind task-result #'task-result-status) :success)
+      (is (bind task-result #'task-result-value) 100))))
 
 (subtest "Testing getResult usecase"
   (let ((task1 (make-task
