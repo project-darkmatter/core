@@ -3,6 +3,9 @@
   (:use :cl
         :darkmatter/utils/maybe
         :darkmatter/domains/task
+        :darkmatter/usecases/eval
+        ;:darkmatter/usecases/get-result
+        ;:darkmatter/usecases/kill
         :prove))
 (in-package darkmatter/test/usecases)
 
