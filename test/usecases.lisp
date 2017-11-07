@@ -18,7 +18,7 @@
   (let* ((code "(+ 1 2 3)")
          (result (usecase.eval code :render nil :optional nil)))
     (is-type result 'usecase.eval.result)
-    (let ((id ((usecase.eval.result-task-id result))))
+    (let ((id (usecase.eval.result-task-id result)))
       (is-type id 'task-id)
       (let ((task (retrieve-task id)))
         (is-type task 'task-entity)
