@@ -38,7 +38,8 @@
                  ;         :depends-on ("usecases"
                  ;                      "domains"))
                  (:module "usecases"
-                          :components ((:file "eval")
+                          :components ((:file "base")
+                                       (:file "eval" :depends-on ("base"))
                  ;                      (:file "get-result" :depends-on ("base"))
                  ;                      (:file "initialize" :depends-on ("base"))
                  ;                      (:file "initialize-package" :depends-on ("base"))
