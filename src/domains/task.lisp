@@ -1,7 +1,8 @@
 (in-package :cl-user)
 (defpackage darkmatter/domains/task
   (:use :cl :darkmatter/utils/maybe)
-  (:export :status
+  (:export :task-id
+           :status
            :task-entity
            :make-task
            :make-task-result
@@ -10,7 +11,6 @@
            :task-result-output
            :task-result-optional
            :task-result-context
-           :task-reference-id
            :task-repository-ref
            :task-repository-append
            :kill-task
@@ -50,12 +50,8 @@
 (defun join-task (task)
   (bt:join-thread (task-entity-thread task)))
 
-;;; Task Reference
-(defstruct task-reference
-  (id 0 :type task-id))
-
-(defun task-repository-ref (repo ref)
-  (find (task-reference-id ref)
+(defun task-repository-ref (repo task-id)
+  (find task-id
         (%task-repository-entries repo)
         :test (lambda (id entity) (= id (task-entity-id entity)))))
 
@@ -67,7 +63,7 @@
 
 (defun task-repository-append (repo task)
   (push task (%task-repository-entries repo))
-  (make-task-reference :id (task-entity-id task)))
+  (task-entity-id task))
 
 ;;; Task Result
 (deftype task-result-status () '(member :success :failure))
@@ -87,8 +83,8 @@
 ;;; User functions
 (defun register-task (task)
   (task-repository-append *task-repository* task))
-(defun retrieve-task (ref)
-  (task-repository-ref *task-repository* ref))
+(defun retrieve-task (id)
+  (task-repository-ref *task-repository* id))
 
 (defun try-get-task-result (task)
   (if (task-alive-p task)
