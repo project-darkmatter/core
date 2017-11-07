@@ -37,14 +37,14 @@
                  ;                      (:file "save" :depends-on ("base")))
                  ;         :depends-on ("usecases"
                  ;                      "domains"))
-                 ;(:module "usecases"
-                 ;         :components ((:file "base")
-                 ;                      (:file "eval" :depends-on ("base"))
+                 (:module "usecases"
+                          :components ((:file "eval")
                  ;                      (:file "get-result" :depends-on ("base"))
                  ;                      (:file "initialize" :depends-on ("base"))
                  ;                      (:file "initialize-package" :depends-on ("base"))
-                 ;                      (:file "save" :depends-on ("base")))
-                 ;         :depends-on ("domains"))
+                 ;                      (:file "save" :depends-on ("base"))
+                 )
+                          :depends-on ("domains"))
                  (:module "domains"
                           :components ((:file "task"))
                           :depends-on ("utils"))
