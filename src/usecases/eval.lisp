@@ -44,39 +44,41 @@
                        (%initialize-package))))
 
     (let ((source (%progn-with-read-from-string code)))
-      (make-usecase.eval.result
-        :task-id
-        (register-task
-          (multiple-value-bind (form context)
-            (%wrap-context source)
-            (make-task
-              (lambda ()
-                (let* ((standard-output *standard-output*)
-                       (*standard-output* (make-string-output-stream))
-                       (*error-output* (make-string-output-stream))
-                       (*trace-output* (make-string-output-stream)))
-                (unwind-protect
-                  (let ((return-value nil)
-                        (errorp nil))
-                    (handler-case
-                      (progn
-                        (setf return-value (funcall (eval form) context))
-                        (make-task-result
-                          :status :success
-                          :value return-value
-                          :output (format nil "~A~A~A"
-                                          (get-output-stream-string *standard-output*)
-                                          (get-output-stream-string *error-output*)
-                                          (get-output-stream-string *trace-output*))))
-                      (error (c)
-                        (setf errorp t)
-                        (format t "~A~%" c)
-                        (make-task-result
-                          :status :failure
-                          :output (format nil "~A~A~A"
-                                          (get-output-stream-string *standard-output*)
-                                          (get-output-stream-string *error-output*)
-                                          (get-output-stream-string *trace-output*))))))
-                  (setf *using-package* *package*
-                        *package* (find-package :darkmatter/usecases/eval)))))
-              (maybe context))))))))
+      (prog1
+        (make-usecase.eval.result
+          :task-id
+          (register-task
+            (multiple-value-bind (form context)
+              (%wrap-context source)
+              (make-task
+                (lambda ()
+                  (let* ((standard-output *standard-output*)
+                         (*standard-output* (make-string-output-stream))
+                         (*error-output* (make-string-output-stream))
+                         (*trace-output* (make-string-output-stream)))
+                    (let ((return-value nil)
+                          (errorp nil))
+                      (handler-case
+                        (progn
+                          (setf return-value (funcall (eval form) context))
+                          (make-task-result
+                            :status :success
+                            :value (if (symbolp return-value)
+                                       (symbol-value return-value)
+                                       return-value)
+                            :output (format nil "~A~A~A"
+                                            (get-output-stream-string *standard-output*)
+                                            (get-output-stream-string *error-output*)
+                                            (get-output-stream-string *trace-output*))))
+                        (error (c)
+                          (setf errorp t)
+                          (format t "~A~%" c)
+                          (make-task-result
+                            :status :failure
+                            :output (format nil "~A~A~A"
+                                            (get-output-stream-string *standard-output*)
+                                            (get-output-stream-string *error-output*)
+                                            (get-output-stream-string *trace-output*))))))))
+                (maybe context)))))
+        (setf *using-package* *package*
+              *package* (find-package :darkmatter/usecases/eval))))))
