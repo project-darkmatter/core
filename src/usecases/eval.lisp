@@ -16,40 +16,39 @@
 (defstruct usecase.eval.result
   (task-id nil :type task-id))
 
-(defmacro lambda-with-context (sexp)
+(defmacro %lambda-with-context (sexp)
   `(lambda (%context%)
      (declare (ignorable %context%))
      ,sexp))
 
-(defun wrap-context (content)
-  (let ((form (macroexpand `(lambda-with-context ,content)))
+(defun %wrap-context (content)
+  (let ((form (macroexpand `(%lambda-with-context ,content)))
         (context (make-hash-table)))
     (values form context)))
+
+(defun %progn-with-read-from-string (str)
+  (let ((source '(progn)))
+    (loop with code-position = 0 while code-position
+          with sexp
+          always (< code-position (length str)) do
+          (multiple-value-setq (sexp code-position)
+            (read-from-string str :eof-error-p nil :start code-position))
+          always sexp do
+          (push sexp source))
+    (reverse source)))
 
 (defun usecase.eval (code &key render optional trace)
   "Evaluate the code, using optional for plugged functions, and render the result.
    Result (:task-id task-id)"
-  (let* ((*package* (or *using-package*
-                        (%initialize-package)))
-         )
+  (let ((*package* (or *using-package*
+                       (%initialize-package))))
 
-    (let ((source '(progn)))
-      (handler-case
-        (loop with code-position = 0 while code-position
-              with sexp do
-              (multiple-value-setq (sexp code-position)
-                (read-from-string code :eof-error-p t :start code-position))
-              always sexp do
-              (push sexp source))
-        (end-of-file (c)
-          (format t "~A~%" c)))
-      (setf source (reverse source))
-
+    (let ((source (%progn-with-read-from-string code)))
       (make-usecase.eval.result
         :task-id
         (register-task
           (multiple-value-bind (form context)
-            (wrap-context source)
+            (%wrap-context source)
             (make-task
               (lambda ()
                 (let* ((standard-output *standard-output*)
