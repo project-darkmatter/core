@@ -114,6 +114,8 @@
     (let ((result (usecase.kill id)))
       (is-type result
                'usecase.kill.result)
+      (is (usecase.kill.result-status result)
+          t)
       (let ((context (usecase.kill.result-context result)))
         (is-type context 'just)
         (is (gethash :temporary (unwrap context))
