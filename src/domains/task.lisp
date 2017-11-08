@@ -2,10 +2,10 @@
 (defpackage darkmatter/domains/task
   (:use :cl :darkmatter/utils/maybe)
   (:export :task-id
-           :status
            :task-entity
            :make-task
            :make-task-result
+           :task-result-with-context
            :task-result-status
            :task-result-value
            :task-result-output
@@ -88,25 +88,28 @@
 
 (defun try-get-task-result (task)
   (if (task-alive-p task)
-      (nothing)
+      (make-task-result-with-context
+        :status :running
+        :value nil
+        :output ""
+        :optional (nothing)
+        :context (task-entity-context task))
       (let ((result (join-task task)))
         (if (typep result 'task-result)
-            (just
-              (make-task-result-with-context
-                :status (task-result-status result)
-                :value (task-result-value result)
-                :output (task-result-output result)
-                :optional (task-result-optional result)
-                :context (task-entity-context task)))))))
+            (make-task-result-with-context
+              :status (task-result-status result)
+              :value (task-result-value result)
+              :output (task-result-output result)
+              :optional (task-result-optional result)
+              :context (task-entity-context task))))))
 
 (defun cancel-task (task)
   (kill-task task)
-  (just
-    (make-task-result-with-context
-      :status :failure
-      :value ""
-      :output ""
-      :optional (nothing)
-      :context (task-entity-context task))))
+  (make-task-result-with-context
+    :status :failure
+    :value ""
+    :output ""
+    :optional (nothing)
+    :context (task-entity-context task)))
 
 
