@@ -54,26 +54,39 @@
         (is-type result2-1
                  'usecase.get-result.result)
         (is (usecase.get-result.result-status result2-1)
-            :running)
-        (is (gethash :temporary (usecase.get-result.result-context result2-1))
-            "i got lost!"))
+            t)
+        (let ((result2-1-content (usecase.get-result.result-content result2-1)))
+          (is (gethash :temporary
+                       (usecase.get-result.result-content-context result2-1-content))
+              "i got lost!")))
       (diag "Wait for task1 to finish...")
       (sleep 1)
       (let ((result1 (usecase.get-result id1)))
         (is-type result1
                  'usecase.get-result.result)
         (is (usecase.get-result.result-status result1)
-            :success)
-        (is (usecase.get-result.result-value result1)
-            2))
+            t)
+        (let ((result1-content (usecase.get-result.result-content result1)))
+          (is (usecase.get-result.result-content-value result1-content)
+              2)))
+      (let ((result2-2 (usecase.get-result id2)))
+        (is-type result2-2
+                 'usecase.get-result.result)
+        (is (usecase.get-result.result-status result2-2)
+            t)
+        (is (usecase.get-result.result-content-status
+              (usecase.get-result.result-content result2-2))
+            :running))
       (diag "Wait for task2 to finish...")
       (sleep 2)
       (let ((result2-2 (usecase.get-result id2)))
         (is-type result2-2
                  'usecase.get-result.result)
         (is (usecase.get-result.result-status result2-2)
-            :failure)
-        (is (gethash :temporary (usecase.get-result.result-context result2-2))
+            t)
+        (is (gethash :temporary
+                     (usecase.get-result.result-content-context
+                       (usecase.get-result.result-content result2-2)))
             "i got lost!")))))
 
 (subtest "Testing kill usecase"
