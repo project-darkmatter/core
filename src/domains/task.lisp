@@ -66,7 +66,7 @@
   (task-entity-id task))
 
 ;;; Task Result
-(deftype task-result-status () '(member :success :failure))
+(deftype task-result-status () '(member :success :failure :running))
 (deftype task-result-output () 'string)
 (deftype task-result-optional () 'maybe)
 (defstruct task-result
