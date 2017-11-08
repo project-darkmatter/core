@@ -41,6 +41,7 @@
                           :components ((:file "base")
                                        (:file "eval" :depends-on ("base"))
                                        (:file "get-result" :depends-on ("base"))
+                                       (:file "kill" :depends-on ("base"))
                  ;                      (:file "initialize" :depends-on ("base"))
                  ;                      (:file "initialize-package" :depends-on ("base"))
                  ;                      (:file "save" :depends-on ("base"))
