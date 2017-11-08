@@ -114,7 +114,9 @@
     (let ((result (usecase.kill id)))
       (is-type result
                'usecase.kill.result)
-      (is (gethash :temporary (usecase.kill.result-context result))
-          "kill me!"))))
+      (let ((context (usecase.kill.result-context result)))
+        (is-type context 'just)
+        (is (gethash :temporary (unwrap context))
+            "kill me!")))))
 
 (finalize)
