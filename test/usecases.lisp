@@ -44,13 +44,13 @@
   (let ((task1 (make-task
                  (lambda ()
                    (sleep 1)
-                   (make-task-result :value 2 :status :success))))
+                   (make-task-result :value 2 :output "2" :status :success))))
         (task2 (let ((context (make-hash-table)))
                  (make-task
                    (lambda ()
                      (setf (gethash :temporary context) "i got lost!")
                      (sleep 3)
-                     (make-task-result :value "i'm late!" :status :failure))
+                     (make-task-result :value "i'm late!" :output ":(" :status :failure))
                    context))))
     (let ((id1 (register-task task1))
           (id2 (register-task task2)))
@@ -61,6 +61,8 @@
             t)
         (let ((result2-1-content (usecase.get-result.result-content result2-1)))
           (is-type result2-1-content 'just)
+          (is (bind result2-1-content #'usecase.get-result.result-content-output)
+              "")
           (let ((result2-1-context
                   (bind result2-1-content #'usecase.get-result.result-content-context)))
             (is-type result2-1-context 'just)
@@ -76,6 +78,8 @@
             t)
         (let ((result1-content (usecase.get-result.result-content result1)))
           (is-type result1-content 'just)
+          (is (bind result1-content #'usecase.get-result.result-content-output)
+              "2")
           (is (bind result1-content #'usecase.get-result.result-content-value)
               2)))
       (let ((result2-2 (usecase.get-result id2)))
@@ -94,12 +98,15 @@
                  'usecase.get-result.result)
         (is (usecase.get-result.result-status result2-2)
             t)
+        (let ((result2-2-content (usecase.get-result.result-content result2-2)))
+          (is (bind result2-2-content #'usecase.get-result.result-content-output)
+              ":(")
         (let ((result2-2-context
-                (bind (usecase.get-result.result-content result2-2)
+                (bind result2-2-content
                       #'usecase.get-result.result-content-context)))
           (is (gethash :temporary
                        (unwrap result2-2-context))
-              "i got lost!"))))))
+              "i got lost!")))))))
 
 (subtest "Testing kill usecase"
   (let* ((task (let ((context (make-hash-table)))
