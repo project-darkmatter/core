@@ -31,7 +31,7 @@
                  (:module "adapters"
                           :components ((:module "presenters"
                                                 :components ((:file "eval")
-                                                             ;(:file "get-result")
+                                                             (:file "get-result")
                                                              ;(:file "kill")
                                                              ))
                                        (:module "controllers"
