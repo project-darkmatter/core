@@ -16,26 +16,9 @@
 (defstruct usecase.eval.result
   (task-id nil :type task-id))
 
-(defmacro %lambda-with-context (sexp)
-  `(lambda (%context%)
-     (declare (ignorable %context%))
-     ,sexp))
-
-(defun %wrap-context (content)
-  (let ((form (macroexpand `(%lambda-with-context ,content)))
-        (context (make-hash-table)))
-    (values form context)))
-
-(defun %progn-with-read-from-string (str)
-  (let ((source '(progn)))
-    (loop with code-position = 0 while code-position
-          with sexp
-          always (< code-position (length str)) do
-          (multiple-value-setq (sexp code-position)
-            (read-from-string str :eof-error-p nil :start code-position))
-          always sexp do
-          (push sexp source))
-    (reverse source)))
+(defun %read-from-string-with-context (str)
+  (read-from-string
+    (format nil "(lambda (%context%) (declare (ignorable %context%)) ~A)" str)))
 
 (defun usecase.eval (code &key render optional trace)
   "Evaluate the code, using optional for plugged functions, and render the result.
@@ -43,13 +26,12 @@
   (let ((*package* (or *using-package*
                        (%initialize-package))))
 
-    (let ((source (%progn-with-read-from-string code)))
+    (let ((source (%read-from-string-with-context code)))
       (prog1
         (make-usecase.eval.result
           :task-id
           (register-task
-            (multiple-value-bind (form context)
-              (%wrap-context source)
+            (let ((context (make-hash-table)))
               (make-task
                 (lambda ()
                   (let* ((standard-output *standard-output*)
@@ -60,7 +42,7 @@
                           (errorp nil))
                       (handler-case
                         (progn
-                          (setf return-value (funcall (eval form) context))
+                          (setf return-value (funcall (eval source) context))
                           (make-task-result
                             :status :success
                             :value (if (symbolp return-value)
