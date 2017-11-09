@@ -24,19 +24,23 @@
   :components ((:module "src"
                 :components
                 (;(:file "main" :depends-on ("config"
-                 ;                           "controllers"
+                 ;                           "adapters"
                  ;                           "usecases"
                  ;                           "domains"))
                  ;(:file "config")
-                 ;(:module "controllers"
-                 ;         :components ((:file "base")
-                 ;                      (:file "eval" :depends-on ("base"))
-                 ;                      (:file "get-result" :depends-on ("base"))
-                 ;                      (:file "initialize" :depends-on ("base"))
-                 ;                      (:file "initialize-package" :depends-on ("base"))
-                 ;                      (:file "save" :depends-on ("base")))
-                 ;         :depends-on ("usecases"
-                 ;                      "domains"))
+                 (:module "adapters"
+                          :components ((:module "presenters"
+                                                :components ((:file "eval")
+                                                             ;(:file "get-result")
+                                                             ;(:file "kill")
+                                                             ))
+                                       (:module "controllers"
+                                                :components (;(:file "eval")
+                                                             ;(:file "get-result")
+                                                             ;(:file "kill")
+                                                             )))
+                          :depends-on ("usecases"
+                                       "domains"))
                  (:module "usecases"
                           :components ((:file "base")
                                        (:file "eval" :depends-on ("base"))

@@ -6,7 +6,7 @@
         :darkmatter/usecases/eval
         :darkmatter/usecases/get-result
         :darkmatter/usecases/kill
-        ;:darkmatter/adapters/presenters/eval
+        :darkmatter/adapters/presenters/eval
         ;:darkmatter/adapters/presenters/get-result
         ;:darkmatter/adapters/presenters/kill
         :prove))
