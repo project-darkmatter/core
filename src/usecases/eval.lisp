@@ -79,6 +79,6 @@
                                             (get-output-stream-string *standard-output*)
                                             (get-output-stream-string *error-output*)
                                             (get-output-stream-string *trace-output*))))))))
-                (maybe context)))))
+                context))))
         (setf *using-package* *package*
               *package* (find-package :darkmatter/usecases/eval))))))
