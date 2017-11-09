@@ -16,10 +16,10 @@
   :version "1.0.0"
   :author "Eddie"
   :license ""
-  :depends-on (:lparallel ;BSD-3-Clause
-               :jsonrpc   ;BSD-2-Clause
-               :yason     ;BSD-2-Clause
-               :cl-fad    ;BSD-2-Clause
+  :depends-on (:bordeaux-threads ;MIT
+               :jsonrpc          ;BSD-2-Clause
+               :yason            ;BSD-2-Clause
+               :cl-fad           ;BSD-2-Clause
                )
   :components ((:module "src"
                 :components
