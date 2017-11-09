@@ -24,7 +24,7 @@
 
   (subtest "Testing eval presenter"
     (let* ((code1 "nil")
-           (code2 "(print 42)")
+           (code2 "(princ 42)")
            (code3 "(setf (gethash :temporary %context%))(sleep 1000)")
            (code4 "(error \"ERROR\")")
            (result1 (usecase.eval code1))
