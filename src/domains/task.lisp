@@ -69,16 +69,15 @@
 (deftype task-result-status () '(member :success :failure :running))
 (deftype task-result-output () 'string)
 (deftype task-result-optional () 'maybe)
-(defstruct task-result
+(defstruct (task-result (:conc-name %task-result-))
   (status   nil :type task-result-status)
   (value    nil)
   (output   "" :type task-result-output)
   (optional (nothing) :type task-result-optional))
 
-(defstruct (task-result-with-context (:include task-result))
+(defstruct (task-result-with-context (:include task-result)
+                                     (:conc-name task-result-))
   (context nil))
-(defun task-result-context (result)
-  (task-result-with-context-context result))
 
 ;;; User functions
 (defun register-task (task)
@@ -97,10 +96,10 @@
       (let ((result (join-task task)))
         (if (typep result 'task-result)
             (make-task-result-with-context
-              :status (task-result-status result)
-              :value (task-result-value result)
-              :output (task-result-output result)
-              :optional (task-result-optional result)
+              :status (%task-result-status result)
+              :value (%task-result-value result)
+              :output (%task-result-output result)
+              :optional (%task-result-optional result)
               :context (task-entity-context task))))))
 
 (defun cancel-task (task)
