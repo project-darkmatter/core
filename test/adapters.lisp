@@ -8,7 +8,7 @@
         :darkmatter/usecases/kill
         :darkmatter/adapters/presenters/eval
         :darkmatter/adapters/presenters/get-result
-        ;:darkmatter/adapters/presenters/kill
+        :darkmatter/adapters/presenters/kill
         :prove))
 (in-package darkmatter/test/adapters)
 
@@ -60,11 +60,11 @@
           (result3 (usecase.kill id3))
           (result4 (usecase.kill -1)))
       (is (presenter.kill result1)
-          "{\"status\":true,\"context\":null}")
+          "{\"status\":true,\"context\":{}}")
       (is (presenter.kill result2)
-          "{\"status\":true,\"context\":null}")
+          "{\"status\":true,\"context\":{}}")
       (is (presenter.kill result3)
-          "{\"status\":true,\"context\":{\"temporary\":\"darkmatter\"}")
+          "{\"status\":true,\"context\":{\"temporary\":\"darkmatter\"}}")
       (is (presenter.kill result4)
           "{\"status\":false,\"context\":null}"))))
 
