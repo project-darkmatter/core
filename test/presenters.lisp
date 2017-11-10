@@ -1,5 +1,5 @@
 (in-package :cl-user)
-(defpackage darkmatter/test/adapters
+(defpackage darkmatter/test/adapters/presenters
   (:use :cl
         :darkmatter/utils/maybe
         :darkmatter/domains/task
@@ -10,10 +10,10 @@
         :darkmatter/adapters/presenters/get-result
         :darkmatter/adapters/presenters/kill
         :prove))
-(in-package darkmatter/test/adapters)
+(in-package darkmatter/test/adapters/presenters)
 
 
-(diag "Adapter layer tests")
+(diag "Presenter in Adapter layer tests")
 
 (plan 3)
 
