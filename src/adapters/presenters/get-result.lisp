@@ -6,8 +6,6 @@
   (:export :presenter.get-result))
 (in-package :darkmatter/adapters/presenters/get-result)
 
-(defmethod yason:encode ((symbol symbol) &optional (stream *standard-output*))
-  (yason:encode (symbol-name symbol) stream))
 
 (defmethod yason:encode ((content usecase.get-result.result-content) &optional (stream *standard-output*))
   (yason:with-output (stream)
