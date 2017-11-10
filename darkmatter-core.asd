@@ -30,9 +30,10 @@
                  ;(:file "config")
                  (:module "adapters"
                           :components ((:module "presenters"
-                                                :components ((:file "eval")
-                                                             (:file "get-result")
-                                                             ;(:file "kill")
+                                                :components ((:file "base")
+                                                             (:file "eval" :depends-on ("base"))
+                                                             (:file "get-result" :depends-on ("base"))
+                                                             (:file "kill" :depends-on ("base"))
                                                              ))
                                        (:module "controllers"
                                                 :components (;(:file "eval")
