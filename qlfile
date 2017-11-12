@@ -1,4 +1,5 @@
 git jsonrpc https://github.com/fukamachi/jsonrpc :ref 766101b4ecbafb73490e1d84569f2dc64524fe42
+ql websocket-driver :latest
 ql cl-fad :latest
 ql bordeaux-threads :latest
 ql yason :latest
