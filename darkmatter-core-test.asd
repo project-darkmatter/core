@@ -20,7 +20,8 @@
                           ((:test-file "maybe")))
                  (:test-file "domains")
                  (:test-file "usecases")
-                 (:test-file "presenters"))))
+                 (:test-file "presenters")
+                 (:test-file "controllers"))))
   :description "Test system for darkmatter"
 
   :defsystem-depends-on (:prove-asdf)
