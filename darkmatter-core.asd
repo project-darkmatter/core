@@ -36,9 +36,9 @@
                                                              (:file "kill" :depends-on ("base"))
                                                              ))
                                        (:module "controllers"
-                                                :components (;(:file "eval")
-                                                             ;(:file "get-result")
-                                                             ;(:file "kill")
+                                                :components ((:file "eval")
+                                                             (:file "get-result")
+                                                             (:file "kill")
                                                              )))
                           :depends-on ("usecases"
                                        "domains"))

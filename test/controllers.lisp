@@ -6,9 +6,9 @@
         :darkmatter/usecases/eval
         :darkmatter/usecases/get-result
         :darkmatter/usecases/kill
-        ;:darkmatter/adapters/controllers/eval
-        ;:darkmatter/adapters/controllers/get-result
-        ;:darkmatter/adapters/controllers/kill
+        :darkmatter/adapters/controllers/eval
+        :darkmatter/adapters/controllers/get-result
+        :darkmatter/adapters/controllers/kill
         :prove))
 (in-package darkmatter/test/adapters/controllers)
 
@@ -22,10 +22,10 @@
   (subtest "Testing eval controller"
     (let ((args (make-hash-table :test #'equal)))
       (setf (gethash "code" args)
-            "(setf %context% 0)
+            "(setf (gethash :count %context%) 0)
              (dotimes (i 1000)
                (sleep 0.1)
-               (incf %context%))"
+               (incf (gethash :count %context%)))"
             (gethash "render" args)
             nil
             (gethash "optional" args)
@@ -35,6 +35,9 @@
       (let ((result (controller.eval args)))
         (is-type result 'usecase.eval.result)
         (setf id1 (usecase.eval.result-task-id result)))))
+
+  (diag "Wait for the task gets processed...")
+  (sleep 1)
 
   (subtest "Testing getResult controller"
     (let ((args (make-hash-table :test #'equal)))
@@ -48,7 +51,7 @@
           (is-type content-maybe 'just)
           (let ((content (unwrap content-maybe)))
             (is-type content 'usecase.get-result.result-content)
-            (is (usecase.get-result.result-status content) :running)
+            (is (usecase.get-result.result-content-status content) :running)
             (is-type (usecase.get-result.result-content-context content) 'just))))))
 
   (subtest "Testing kill controller"
@@ -61,6 +64,7 @@
             t)
         (let ((context-maybe (usecase.kill.result-context result)))
           (is-type context-maybe 'just)
-          (ok (bind context-maybe #'numberp)))))))
+          (let ((context (unwrap context-maybe)))
+            (is-type (gethash :count context) 'integer)))))))
 
 (finalize)
