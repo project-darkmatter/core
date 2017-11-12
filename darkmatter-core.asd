@@ -23,13 +23,15 @@
                )
   :components ((:module "src"
                 :components
-                (;(:file "main" :depends-on ("config"
-                 ;                           "adapters"
-                 ;                           "usecases"
-                 ;                           "domains"))
+                ((:file "main" :depends-on (;"config"
+                                            "adapters"
+                                            "usecases"
+                                            "domains"
+                                            "utils"))
                  ;(:file "config")
                  (:module "adapters"
-                          :components ((:module "presenters"
+                          :components ((:file "controller" :depends-on ("controllers"))
+                                       (:module "presenters"
                                                 :components ((:file "base")
                                                              (:file "eval" :depends-on ("base"))
                                                              (:file "get-result" :depends-on ("base"))
