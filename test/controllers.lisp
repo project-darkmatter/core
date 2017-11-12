@@ -21,18 +21,24 @@
 
   (subtest "Testing eval controller"
     (let ((args (make-hash-table :test #'equal)))
-      (setf (gethash :|code| args)
+      (setf (gethash "code" args)
             "(setf %context% 0)
              (dotimes (i 1000)
                (sleep 0.1)
-               (incf %context%))")
+               (incf %context%))"
+            (gethash "render" args)
+            nil
+            (gethash "optional" args)
+            nil
+            (gethash "trace" args)
+            nil)
       (let ((result (controller.eval args)))
         (is-type result 'usecase.eval.result)
         (setf id1 (usecase.eval.result-task-id result)))))
 
   (subtest "Testing getResult controller"
     (let ((args (make-hash-table :test #'equal)))
-      (setf (gethash :|taskId| args)
+      (setf (gethash "taskId" args)
             id1)
       (let ((result (controller.get-result args)))
         (is-type result 'usecase.get-result.result)
@@ -47,7 +53,7 @@
 
   (subtest "Testing kill controller"
     (let ((args (make-hash-table :test #'equal)))
-      (setf (gethash :|taskId| args)
+      (setf (gethash "taskId" args)
             id1)
       (let ((result (controller.kill args)))
         (is-type result 'usecase.kill.result)
