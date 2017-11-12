@@ -21,7 +21,8 @@
                  (:test-file "domains")
                  (:test-file "usecases")
                  (:test-file "presenters")
-                 (:test-file "controllers"))))
+                 (:test-file "controllers")
+                 (:test-file "jsonrpc"))))
   :description "Test system for darkmatter"
 
   :defsystem-depends-on (:prove-asdf)
