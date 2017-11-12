@@ -17,6 +17,7 @@
   :author "Eddie"
   :license ""
   :depends-on (:bordeaux-threads ;MIT
+               :websocket-driver ;BSD-2-Clause
                :jsonrpc          ;BSD-2-Clause
                :yason            ;BSD-2-Clause
                :cl-fad           ;BSD-2-Clause
