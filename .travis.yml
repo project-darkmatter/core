@@ -17,7 +17,12 @@ install:
   - ros -e '(ql:update-all-dists :prompt nil)'
   - ros install qlot
   - ros install prove
-  - qlot install
+    #- qlot install
+  - ros install fukamachi/jsonrpc
+  - ros install fukamachi/websocket-driver
+  - ros install cl-fad
+  - ros install bordeaux-threads
+  - ros install yason
 
 cache:
   directories:
@@ -29,4 +34,5 @@ before_script:
   - ros config
 
 script:
-  - qlot exec run-prove *-test.asd
+  #- qlot exec run-prove *-test.asd
+  - run-prove *-test.asd
