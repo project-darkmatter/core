@@ -59,7 +59,8 @@
                           :components ((:file "task"))
                           :depends-on ("utils"))
                  (:module "utils"
-                          :components ((:file "maybe"))))))
+                          :components ((:file "maybe")
+                                       (:file "logger"))))))
   :description ""
   :long-description
   #.(with-open-file (stream (merge-pathnames
