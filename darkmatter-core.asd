@@ -21,6 +21,7 @@
                :jsonrpc          ;BSD-2-Clause
                :yason            ;BSD-2-Clause
                :cl-fad           ;BSD-2-Clause
+               :hunchentoot      ;BSD-2-Clause
                )
   :components ((:module "src"
                 :components

@@ -23,6 +23,7 @@ install:
   - ros install cl-fad
   - ros install bordeaux-threads
   - ros install yason
+  - ros install hunchentoot
 
 cache:
   directories:
