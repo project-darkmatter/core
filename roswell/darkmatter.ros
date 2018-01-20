@@ -1,0 +1,31 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#| <Put a one-line description here>
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  #+quicklisp (ql:quickload '("darkmatter-core") :silent t)
+  )
+
+(defpackage :ros.script.darkmatter.3725288342
+  (:use :cl))
+(in-package :ros.script.darkmatter.3725288342)
+
+(defun starts-with (whole part)
+  (let ((len (length part)))
+    (when (loop for i from 0 below len
+                always (eq (char whole i)
+                           (char part i)))
+      (subseq whole len))))
+
+(defun parse-arg (arg)
+  (let ((arg-log  (starts-with arg "--log="))
+        (arg-port (starts-with arg "--port=")))
+    (or (and arg-log  (list :log arg-log))
+        (and arg-port (list :port (parse-integer arg-port))))))
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (apply #'darkmatter:start (mapcan #'parse-arg argv)))
+;;; vim: set ft=lisp lisp:
