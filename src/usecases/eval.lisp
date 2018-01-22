@@ -27,6 +27,8 @@
                        (%initialize-package))))
 
     (let ((source (%read-from-string-with-context code)))
+      (logger:normal logger:*log-output* "Eval ~A" source)
+      (force-output logger:*log-output*)
       (prog1
         (make-usecase.eval.result
           :task-id
