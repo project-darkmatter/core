@@ -37,6 +37,8 @@
   (content nil :type usecase.get-result.%result-content))
 
 (defun usecase.get-result (task-id)
+  (logger:normal logger:*log-output* "Requested task:~A" task-id)
+  (force-output logger:*log-output*)
   (let ((task (retrieve-task task-id)))
     (if task
         (let ((task-result (try-get-task-result task)))
