@@ -24,45 +24,67 @@
   "Evaluate the code, using optional for plugged functions, and render the result.
    Result (:task-id task-id)"
   (let ((*package* (or *using-package*
-                       (%initialize-package))))
+                       (%initialize-package)))
+        (source nil)
+        (error-value nil)
+        (parse-error-p nil))
 
-    (let ((source (%read-from-string-with-context code)))
-      (logger:normal logger:*log-output* "Eval ~A" source)
-      (force-output logger:*log-output*)
-      (prog1
-        (make-usecase.eval.result
-          :task-id
-          (register-task
-            (let ((context (make-hash-table)))
-              (make-task
-                (lambda ()
-                  (let* ((standard-output *standard-output*)
-                         (*standard-output* (make-string-output-stream))
-                         (*error-output* (make-string-output-stream))
-                         (*trace-output* (make-string-output-stream)))
-                    (let ((return-value nil)
-                          (errorp nil))
-                      (handler-case
-                        (progn
-                          (setf return-value (funcall (eval source) context))
-                          (make-task-result
-                            :status :success
-                            :value (if (symbolp return-value)
-                                       (symbol-value return-value)
-                                       return-value)
-                            :output (format nil "~A~A~A"
-                                            (get-output-stream-string *standard-output*)
-                                            (get-output-stream-string *error-output*)
-                                            (get-output-stream-string *trace-output*))))
-                        (error (c)
-                          (setf errorp t)
-                          (format t "~A~%" c)
-                          (make-task-result
-                            :status :failure
-                            :output (format nil "~A~A~A"
-                                            (get-output-stream-string *standard-output*)
-                                            (get-output-stream-string *error-output*)
-                                            (get-output-stream-string *trace-output*))))))))
-                context))))
-        (setf *using-package* *package*
-              *package* (find-package :darkmatter/usecases/eval))))))
+    (handler-case
+      (setf source (%read-from-string-with-context code))
+      (error (c)
+        (setf error-value c
+              parse-error-p t)))
+
+    (if parse-error-p
+        (progn
+          (logger:alert logger:*log-output* "Parse error")
+          (force-output logger:*log-output*)
+          (make-usecase.eval.result
+            :task-id
+            (register-task
+              (let ((context (make-hash-table)))
+                (make-task
+                  (lambda ()
+                    (make-task-result
+                      :status :failure
+                      :output (format nil "~A~%" error-value))))))))
+        (progn
+          (logger:normal logger:*log-output* "Eval ~A" source)
+          (force-output logger:*log-output*)
+          (prog1
+            (make-usecase.eval.result
+              :task-id
+              (register-task
+                (let ((context (make-hash-table)))
+                  (make-task
+                    (lambda ()
+                      (let* ((standard-output *standard-output*)
+                             (*standard-output* (make-string-output-stream))
+                             (*error-output* (make-string-output-stream))
+                             (*trace-output* (make-string-output-stream)))
+                        (let ((return-value nil)
+                              (errorp nil))
+                          (handler-case
+                            (progn
+                              (setf return-value (funcall (eval source) context))
+                              (make-task-result
+                                :status :success
+                                :value (if (symbolp return-value)
+                                           (symbol-value return-value)
+                                           return-value)
+                                :output (format nil "~A~A~A"
+                                                (get-output-stream-string *standard-output*)
+                                                (get-output-stream-string *error-output*)
+                                                (get-output-stream-string *trace-output*))))
+                            (error (c)
+                              (setf errorp t)
+                              (format t "~A~%" c)
+                              (make-task-result
+                                :status :failure
+                                :output (format nil "~A~A~A"
+                                                (get-output-stream-string *standard-output*)
+                                                (get-output-stream-string *error-output*)
+                                                (get-output-stream-string *trace-output*))))))))
+                    context))))
+            (setf *using-package* *package*
+                  *package* (find-package :darkmatter/usecases/eval)))))))
