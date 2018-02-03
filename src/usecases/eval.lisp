@@ -23,11 +23,16 @@
 (defun usecase.eval (code &key render optional trace)
   "Evaluate the code, using optional for plugged functions, and render the result.
    Result (:task-id task-id)"
+  (logger:normal logger:*log-output* "USECASE.EVAL \"~A\"" code)
+  (force-output logger:*log-output*)
+
   (let ((*package* (or *using-package*
                        (%initialize-package)))
         (source nil)
         (error-value nil)
         (parse-error-p nil))
+
+    (logger:normal logger:*log-output* "IN-PACKAGE ~A" *package*)
 
     (handler-case
       (setf source (%read-from-string-with-context code))
@@ -49,7 +54,7 @@
                       :status :failure
                       :output (format nil "~A~%" error-value))))))))
         (progn
-          (logger:normal logger:*log-output* "Eval ~A" source)
+          (logger:normal logger:*log-output* "Parsing successful ~A" source)
           (force-output logger:*log-output*)
           (prog1
             (make-usecase.eval.result
