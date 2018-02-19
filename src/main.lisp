@@ -20,7 +20,7 @@
       (jsonrpc:expose *server* (car api) (cdr api)))
     +apis+))
 
-(defun start (&key (port 50000) log)
+(defun start (&key (port 50000) (mode :tcp) log)
   (%register-apis)
   (let ((logfile-p nil))
     (block nil
@@ -34,7 +34,8 @@
                   (progn
                     (setf logger:*log-output* (open log :direction :output)
                           logfile-p t)
-                    (logger:normal t "Start Darkmatter with logging: ~A~%" (truename log))))
+                    (logger:normal t "Start Darkmatter with logging: ~A." (truename log))
+                    (logger:normal t "Listening on localhost:~A." port)))
               (setf logger:*log-output* *standard-output*))
           (tagbody
             start
@@ -42,7 +43,7 @@
                 (progn
                   (format logger:*log-output* "#~A~%" port)
                   (force-output logger:*log-output*)
-                  (jsonrpc:server-listen *server* :port port :mode :websocket :silent t))
+                  (jsonrpc:server-listen *server* :port port :mode mode :silent t))
                 ((or usocket:address-in-use-error error) (c)
                   (incf port)
                   (if (< 65535 port)
