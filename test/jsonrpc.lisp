@@ -5,20 +5,25 @@
 (in-package darkmatter/test/jsonrpc)
 
 (defvar +port+ 50000)
+(defvar +mode+ :tcp)
 (defvar *client* (jsonrpc:make-client))
+
 
 (diag "APIs test for JSON-RPC")
 
 (plan 4)
 
 (let ((server (bt:make-thread
-                (lambda () (darkmatter:start :port +port+))))
+                (lambda () (darkmatter:start :port +port+
+                                             :mode +mode+))))
       (task-id nil))
 
   (subtest "Connect to JSON-RPC server"
     (ok (jsonrpc:client-connect *client*
-                                :url (format nil "ws://127.0.0.1:~A" +port+)
-                                :mode :websocket)))
+                                :url (format nil "~A://127.0.0.1:~A"
+                                             (if (eq +mode+ :tcp) "http" "ws")
+                                             +port+)
+                                :mode :tcp)))
 
   (subtest "Testing darkmatter/eval API"
     (let* ((args (yason:parse
